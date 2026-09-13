@@ -1,1 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#080914">
+<title>JR FIGHT</title>
 
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#080914;
+  color:white;
+}
+
+button{
+  font:inherit;
+  border:0;
+  cursor:pointer;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  overflow:hidden;
+}
+
+.screen.active{
+  display:flex;
+}
+
+/* =========================
+   INTRO
+========================= */
+
+#intro{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(91,53,255,.35),transparent 30%),
+    linear-gradient(135deg,#070812,#15112e 50%,#080914);
+}
+
+.intro-bg{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.light{
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:.3;
+  animation:float 5s infinite alternate ease-in-out;
+}
+
+.light.one{
+  background:#7b3cff;
+  left:-100px;
+  top:10%;
+}
+
+.light.two{
+  background:#147cff;
+  right:-100px;
+  bottom:5%;
+  animation-delay:1s;
+}
+
+.light.three{
+  background:#ff174f;
+  left:40%;
+  bottom:-150px;
+  animation-delay:2s;
+}
+
+@keyframes float{
+  from{transform:translateY(-20px) scale(1)}
+  to{transform:translateY(25px) scale(1.15)}
+}
+
+.intro-content{
+  position:relative;
+  z-index:2;
+  width:92%;
+  max-width:520px;
+}
+
+.logo{
+  font-size:clamp(55px,16vw,105px);
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:-6px;
+  text-transform:uppercase;
+  text-shadow:
+    4px 4px 0 #6827ff,
+    8px 8px 25px rgba(0,0,0,.8);
+  transform:skew(-8deg);
+  margin-bottom:5px;
+}
+
+.logo span{
+  color:#fff;
+}
+
+.tagline{
+  color:#bcb9d8;
+  letter-spacing:5px;
+  font-size:12px;
+  margin-bottom:45px;
+}
+
+.primary-btn{
+  width:min(330px,90%);
+  padding:17px 25px;
+  border-radius:16px;
+  color:white;
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,#6d35ff,#a020f0);
+  box-shadow:0 10px 30px rgba(111,44,255,.35);
+  transition:.15s;
+}
+
+.primary-btn:active{
+  transform:scale(.95);
+}
+
+/* =========================
+   GENERAL MENU
+========================= */
+
+.menu-screen{
+  align-items:center;
+  justify-content:center;
+  padding:25px 16px;
+  background:
+    radial-gradient(circle at top,#28204e,transparent 45%),
+    #090a13;
+}
+
+.menu-box{
+  width:min(620px,100%);
+  max-height:94vh;
+  overflow:auto;
+  text-align:center;
+  padding:28px 18px;
+}
+
+.menu-title{
+  font-size:30px;
+  font-weight:1000;
+  margin:0 0 8px;
+  text-transform:uppercase;
+}
+
+.menu-sub{
+  color:#aaa8bd;
+  margin:0 0 25px;
+  font-size:14px;
+}
+
+.options{
+  display:grid;
+  gap:13px;
+}
+
+.option-btn{
+  width:100%;
+  padding:18px;
+  border-radius:15px;
+  background:#171827;
+  border:2px solid #292b3f;
+  color:#eee;
+  font-weight:900;
+  transition:.15s;
+}
+
+.option-btn:active{
+  transform:scale(.97);
+}
+
+.option-btn.selected{
+  border-color:#8c51ff;
+  background:linear-gradient(135deg,#24194a,#3a205d);
+  box-shadow:0 0 25px rgba(130,72,255,.25);
+}
+
+.easy{color:#6dff9a}
+.normal{color:#ffd45e}
+.hard{color:#ff647c}
+
+/* =========================
+   FIGHTER SELECT
+========================= */
+
+.fighters{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.fighter-card{
+  position:relative;
+  background:#141522;
+  border:2px solid #292b3f;
+  border-radius:20px;
+  padding:10px;
+  overflow:hidden;
+  transition:.15s;
+}
+
+.fighter-card.selected{
+  border-color:#a35cff;
+  box-shadow:0 0 28px rgba(146,69,255,.3);
+  transform:translateY(-3px);
+}
+
+.fighter-photo{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  object-position:center;
+  border-radius:15px;
+  background:#252638;
+}
+
+.fighter-name{
+  font-weight:1000;
+  margin:11px 0 3px;
+}
+
+.fighter-number{
+  font-size:11px;
+  color:#85869a;
+}
+
+.vs{
+  font-size:24px;
+  font-weight:1000;
+  margin:18px 0;
+  color:#ff4f73;
+}
+
+/* =========================
+   MAP SELECT
+========================= */
+
+.maps{
+  display:grid;
+  gap:13px;
+}
+
+.map-card{
+  min-height:100px;
+  border:2px solid #292b3f;
+  border-radius:18px;
+  padding:20px;
+  text-align:left;
+  position:relative;
+  overflow:hidden;
+  transition:.15s;
+}
+
+.map-card.selected{
+  border-color:#9a5cff;
+  box-shadow:0 0 25px rgba(145,78,255,.3);
+}
+
+.map-city{
+  background:
+    linear-gradient(135deg,rgba(10,16,45,.9),rgba(73,19,92,.7)),
+    repeating-linear-gradient(90deg,#172044 0 18px,#10162c 18px 35px);
+}
+
+.map-volcano{
+  background:
+    radial-gradient(circle at 70% 80%,#ff4b16,transparent 15%),
+    linear-gradient(135deg,#28100e,#661b17,#16090c);
+}
+
+.map-forest{
+  background:
+    radial-gradient(circle at 20% 30%,#3a9650,transparent 20%),
+    linear-gradient(135deg,#081d16,#164f30,#07120e);
+}
+
+.map-title{
+  font-size:21px;
+  font-weight:1000;
+}
+
+.map-desc{
+  color:#ddd;
+  font-size:12px;
+  margin-top:6px;
+}
+
+/* =========================
+   FIGHT SCREEN
+========================= */
+
+#fight{
+  background:#111;
+}
+
+.arena{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.arena.city{
+  background:
+    linear-gradient(to top,rgba(0,0,0,.8),transparent 60%),
+    linear-gradient(135deg,#0d1431,#442052 55%,#10152b);
+}
+
+.arena.volcano{
+  background:
+    radial-gradient(circle at 50% 90%,#ff5a16 0,rgba(255,65,0,.5) 10%,transparent 35%),
+    linear-gradient(#190b15,#531719 50%,#0b0708);
+}
+
+.arena.forest{
+  background:
+    radial-gradient(circle at 30% 20%,#55a65e,transparent 15%),
+    radial-gradient(circle at 80% 30%,#2c7848,transparent 18%),
+    linear-gradient(#0b2619,#163e25 55%,#07100b);
+}
+
+.arena::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:32%;
+  background:
+    linear-gradient(to top,rgba(0,0,0,.9),transparent),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 2px,transparent 2px 50px);
+}
+
+.hud{
+  position:absolute;
+  top:12px;
+  left:10px;
+  right:10px;
+  z-index:20;
+}
+
+.health-row{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:10px;
+  align-items:center;
+}
+
+.health-box{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.health-box.enemy{
+  align-items:flex-end;
+}
+
+.player-name{
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.hp-bg{
+  width:100%;
+  height:18px;
+  border:2px solid #fff;
+  background:#25131c;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.hp{
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,#2cff74,#11b85a);
+  transition:.2s;
+}
+
+.enemy .hp{
+  background:linear-gradient(90deg,#ff355e,#ff8b38);
+}
+
+.timer{
+  min-width:52px;
+  text-align:center;
+  font-size:24px;
+  font-weight:1000;
+  text-shadow:0 3px 10px #000;
+}
+
+.combo{
+  position:absolute;
+  left:50%;
+  top:24%;
+  transform:translate(-50%,-50%) scale(.7);
+  z-index:30;
+  font-size:clamp(24px,8vw,52px);
+  font-weight:1000;
+  color:#fff;
+  text-shadow:0 4px 0 #6c22ff,0 0 25px #000;
+  opacity:0;
+  pointer-events:none;
+}
+
+.combo.show{
+  animation:comboPop .65s forwards;
+}
+
+@keyframes comboPop{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}
+  20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-70%) scale(1)}
+}
+
+/* Fighters */
+
+.fighter{
+  position:absolute;
+  bottom:18%;
+  width:125px;
+  height:220px;
+  z-index:10;
+  transition:transform .12s;
+}
+
+.fighter.player{
+  left:9%;
+}
+
+.fighter.enemy{
+  right:9%;
+  transform:scaleX(-1);
+}
+
+.fighter-body{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:75px;
+  height:120px;
+  transform:translateX(-50%);
+  border-radius:35px 35px 20px 20px;
+  background:linear-gradient(135deg,#27283a,#11121d);
+  border:2px solid rgba(255,255,255,.15);
+}
+
+.fighter.enemy .fighter-body{
+  background:linear-gradient(135deg,#541a42,#17101d);
+}
+
+.fighter-head{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:5px;
+  width:92px;
+  height:92px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center top;
+  border:4px solid white;
+  background:#333;
+  box-shadow:0 7px 20px rgba(0,0,0,.5);
+}
+
+.fist{
+  position:absolute;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  background:#d79c7c;
+  border:3px solid rgba(0,0,0,.35);
+  z-index:5;
+}
+
+.fist.left{
+  left:2px;
+  top:112px;
+}
+
+.fist.right{
+  right:2px;
+  top:112px;
+}
+
+.leg{
+  position:absolute;
+  bottom:-22px;
+  width:25px;
+  height:65px;
+  background:#151622;
+  border-radius:10px;
+}
+
+.leg.left{left:18px;transform:rotate(8deg)}
+.leg.right{right:18px;transform:rotate(-8deg)}
+
+.fighter.attack{
+  animation:attack .3s ease;
+}
+
+@keyframes attack{
+  0%{transform:translateX(0)}
+  45%{transform:translateX(30px) scale(1.03)}
+  100%{transform:translateX(0)}
+}
+
+.enemy.attack{
+  animation:enemyAttack .3s ease;
+}
+
+@keyframes enemyAttack{
+  0%{transform:scaleX(-1) translateX(0)}
+  45%{transform:scaleX(-1) translateX(30px) scale(1.03)}
+  100%{transform:scaleX(-1) translateX(0)}
+}
+
+.fighter.hit{
+  animation:hit .25s ease;
+}
+
+@keyframes hit{
+  0%,100%{filter:none}
+  25%{filter:brightness(2) saturate(1.4)}
+  50%{transform:translateX(-13px)}
+}
+
+.enemy.hit{
+  animation:enemyHit .25s ease;
+}
+
+@keyframes enemyHit{
+  0%,100%{filter:none}
+  50%{transform:scaleX(-1) translateX(-13px)}
+}
+
+.fighter.blocking{
+  filter:brightness(.7) saturate(.7);
+}
+
+.damage{
+  position:absolute;
+  z-index:50;
+  color:#fff;
+  font-weight:1000;
+  font-size:26px;
+  text-shadow:0 3px 0 #000;
+  animation:damageFloat .7s forwards;
+  pointer-events:none;
+}
+
+@keyframes damageFloat{
+  from{opacity:1;transform:translateY(0) scale(1)}
+  to{opacity:0;transform:translateY(-70px) scale(1.3)}
+}
+
+/* Controls */
+
+.controls{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:12px;
+  z-index:30;
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+}
+
+.move-controls{
+  display:flex;
+  gap:8px;
+}
+
+.control-btn{
+  width:58px;
+  height:58px;
+  border-radius:18px;
+  color:#fff;
+  background:rgba(17,18,30,.82);
+  border:2px solid rgba(255,255,255,.2);
+  font-weight:1000;
+  box-shadow:0 5px 15px rgba(0,0,0,.4);
+  touch-action:none;
+}
+
+.control-btn:active{
+  transform:scale(.9);
+  background:#47217a;
+}
+
+.attack-controls{
+  display:flex;
+  gap:8px;
+}
+
+.attack-btn{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  color:white;
+  font-weight:1000;
+  border:3px solid rgba(255,255,255,.35);
+  box-shadow:0 5px 18px rgba(0,0,0,.5);
+  touch-action:none;
+}
+
+.attack-btn.attack-a{background:#c42e45}
+.attack-btn.block{background:#2464b9}
+.attack-btn.special{background:#7432d5}
+
+.fight-message{
+  position:absolute;
+  z-index:40;
+  top:42%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:clamp(34px,11vw,70px);
+  font-weight:1000;
+  text-transform:uppercase;
+  font-style:italic;
+  text-shadow:0 5px 0 #000;
+  pointer-events:none;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+#result{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:
+    radial-gradient(circle at center,rgba(110,41,255,.3),transparent 40%),
+    #080914;
+}
+
+.result-box{
+  width:92%;
+  max-width:500px;
+}
+
+.result-title{
+  font-size:clamp(48px,14vw,80px);
+  font-weight:1000;
+  font-style:italic;
+  text-shadow:0 5px 0 #5420b5;
+}
+
+.result-sub{
+  color:#aaa;
+  margin:15px 0 35px;
+}
+
+/* Small screens */
+
+@media(max-width:430px){
+  .fighter{
+    width:110px;
+    height:195px;
+  }
+
+  .fighter-head{
+    width:80px;
+    height:80px;
+  }
+
+  .fighter-body{
+    width:68px;
+    height:108px;
+  }
+
+  .fighter.player{left:4%}
+  .fighter.enemy{right:4%}
+
+  .control-btn{
+    width:52px;
+    height:52px;
+  }
+
+  .attack-btn{
+    width:58px;
+    height:58px;
+    font-size:11px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     INTRO
+========================= -->
+
+<section id="intro" class="screen active">
+  <div class="intro-bg">
+    <div class="light one"></div>
+    <div class="light two"></div>
+    <div class="light three"></div>
+  </div>
+
+  <div class="intro-content">
+    <div class="logo">JR <span>FIGHT</span></div>
+    <div class="tagline">CHOOSE YOUR FIGHT • MAKE YOUR MOVE</div>
+
+    <button class="primary-btn" onclick="startGame()">START</button>
+  </div>
+</section>
+
+
+<!-- =========================
+     DIFFICULTY
+========================= -->
+
+<section id="difficulty" class="screen menu-screen">
+  <div class="menu-box">
+
+    <h1 class="menu-title">Difficulty</h1>
+    <p class="menu-sub">Piliin ang level ng kalaban.</p>
+
+    <div class="options">
+
+      <button class="option-btn easy" onclick="chooseDifficulty('easy',this)">
+        🟢 EASY
+        <small style="display:block;color:#aaa;margin-top:5px">
+          Mabagal at mas kaunting damage
+        </small>
+      </button>
+
+      <button class="option-btn normal" onclick="chooseDifficulty('normal',this)">
+        🟡 NORMAL
+        <small style="display:block;color:#aaa;margin-top:5px">
+          Balanced battle
+        </small>
+      </button>
+
+      <button class="option-btn hard" onclick="chooseDifficulty('hard',this)">
+        🔴 HARD
+        <small style="display:block;color:#aaa;margin-top:5px">
+          Mas mabilis at mas malakas
+        </small>
+      </button>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     FIGHTER SELECT
+========================= -->
+
+<section id="fighterSelect" class="screen menu-screen">
+  <div class="menu-box">
+
+    <h1 class="menu-title">Choose Your Fighter</h1>
+    <p class="menu-sub">Piliin kung sino ang gagamitin mo.</p>
+
+    <div class="fighters">
+
+      <button class="fighter-card" id="fighterCard1" onclick="chooseFighter(1)">
+        <img class="fighter-photo"
+             src="IMG_20260913_091622.jpg"
+             alt="Fighter 1">
+        <div class="fighter-name">FIGHTER 1</div>
+        <div class="fighter-number">POWER • SPEED</div>
+      </button>
+
+      <button class="fighter-card" id="fighterCard2" onclick="chooseFighter(2)">
+        <img class="fighter-photo"
+             src="IMG_20260913_091650.jpg"
+             alt="Fighter 2">
+        <div class="fighter-name">FIGHTER 2</div>
+        <div class="fighter-number">POWER • DEFENSE</div>
+      </button>
+
+    </div>
+
+    <div class="vs">VS</div>
+
+    <button class="primary-btn" onclick="goToMaps()">CONTINUE</button>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     MAP SELECT
+========================= -->
+
+<section id="mapSelect" class="screen menu-screen">
+  <div class="menu-box">
+
+    <h1 class="menu-title">Choose Arena</h1>
+    <p class="menu-sub">Saan magaganap ang laban?</p>
+
+    <div class="maps">
+
+      <button class="map-card map-city" onclick="chooseMap('city',this)">
+        <div class="map-title">🌆 NEON CITY</div>
+        <div class="map-desc">Night city • Neon lights • Street battle</div>
+      </button>
+
+      <button class="map-card map-volcano" onclick="chooseMap('volcano',this)">
+        <div class="map-title">🌋 VOLCANIC ARENA</div>
+        <div class="map-desc">Lava • Fire • Extreme battle</div>
+      </button>
+
+      <button class="map-card map-forest" onclick="chooseMap('forest',this)">
+        <div class="map-title">🌲 FOREST BATTLEFIELD</div>
+        <div class="map-desc">Forest • Nature • Hidden arena</div>
+      </button>
+
+    </div>
+
+    <br>
+
+    <button class="primary-btn" onclick="startFight()">FIGHT!</button>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     FIGHT
+========================= -->
+
+<section id="fight" class="screen">
+
+  <div id="arena" class="arena city"></div>
+
+  <div class="hud">
+
+    <div class="health-row">
+
+      <div class="health-box">
+        <div class="player-name" id="playerName">PLAYER</div>
+        <div class="hp-bg">
+          <div class="hp" id="playerHP"></div>
+        </div>
+      </div>
+
+      <div class="timer" id="timer">60</div>
+
+      <div class="health-box enemy">
+        <div class="player-name">CPU</div>
+        <div class="hp-bg">
+          <div class="hp" id="enemyHP"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="combo" id="combo">COMBO!</div>
+  <div class="fight-message" id="fightMessage"></div>
+
+  <!-- PLAYER -->
+  <div class="fighter player" id="player">
+
+    <img id="playerHead"
+         class="fighter-head"
+         src="IMG_20260913_091622.jpg">
+
+    <div class="fighter-body"></div>
+
+    <div class="fist left"></div>
+    <div class="fist right"></div>
+
+    <div class="leg left"></div>
+    <div class="leg right"></div>
+
+  </div>
+
+
+  <!-- ENEMY -->
+  <div class="fighter enemy" id="enemy">
+
+    <img id="enemyHead"
+         class="fighter-head"
+         src="IMG_20260913_091650.jpg">
+
+    <div class="fighter-body"></div>
+
+    <div class="fist left"></div>
+    <div class="fist right"></div>
+
+    <div class="leg left"></div>
+    <div class="leg right"></div>
+
+  </div>
+
+
+  <!-- CONTROLS -->
+  <div class="controls">
+
+    <div class="move-controls">
+      <button class="control-btn"
+              ontouchstart="movePlayer(-1)"
+              onclick="movePlayer(-1)">◀</button>
+
+      <button class="control-btn"
+              ontouchstart="movePlayer(1)"
+              onclick="movePlayer(1)">▶</button>
+    </div>
+
+    <div class="attack-controls">
+
+      <button class="attack-btn attack-a"
+              ontouchstart="playerAttack()"
+              onclick="playerAttack()">👊</button>
+
+      <button class="attack-btn block"
+              ontouchstart="playerBlock()"
+              onclick="playerBlock()">🛡️</button>
+
+      <button class="attack-btn special"
+              ontouchstart="playerSpecial()"
+              onclick="playerSpecial()">⚡</button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     RESULT
+========================= -->
+
+<section id="result" class="screen">
+
+  <div class="result-box">
+
+    <div class="result-title" id="resultTitle">VICTORY!</div>
+
+    <div class="result-sub" id="resultSub">
+      You defeated your opponent!
+    </div>
+
+    <button class="primary-btn" onclick="rematch()">
+      REMATCH
+    </button>
+
+    <br><br>
+
+    <button class="option-btn" onclick="mainMenu()">
+      MAIN MENU
+    </button>
+
+  </div>
+
+</section>
+
+
+<script>
+
+/* =====================================
+   GAME VARIABLES
+===================================== */
+
+const images = {
+  1: "IMG_20260913_091622.jpg",
+  2: "IMG_20260913_091650.jpg"
+};
+
+let difficulty = "normal";
+let selectedFighter = 1;
+let selectedMap = "city";
+
+let playerHP = 100;
+let enemyHP = 100;
+
+let playerX = 9;
+let enemyX = 76;
+
+let timer = 60;
+let gameRunning = false;
+
+let playerBlocking = false;
+let specialReady = true;
+
+let comboCount = 0;
+let comboTimer = null;
+let timerInterval = null;
+let aiInterval = null;
+
+
+/* =====================================
+   SCREEN SYSTEM
+===================================== */
+
+function showScreen(id){
+
+  document.querySelectorAll(".screen").forEach(screen=>{
+    screen.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+}
+
+
+/* =====================================
+   SOUND EFFECTS
+   Uses Web Audio API
+===================================== */
+
+let audioCtx = null;
+
+function initAudio(){
+
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  if(audioCtx.state === "suspended"){
+    audioCtx.resume();
+  }
+}
+
+function sound(type){
+
+  try{
+
+    initAudio();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if(type === "click"){
+      osc.frequency.setValueAtTime(500,now);
+      osc.frequency.exponentialRampToValueAtTime(800,now+.08);
+      gain.gain.setValueAtTime(.15,now);
+      gain.gain.exponentialRampToValueAtTime(.001,now+.1);
+      osc.start(now);
+      osc.stop(now+.1);
+    }
+
+    else if(type === "punch"){
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(130,now);
+      osc.frequency.exponentialRampToValueAtTime(55,now+.12);
+    
